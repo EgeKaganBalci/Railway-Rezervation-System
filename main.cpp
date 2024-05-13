@@ -19,12 +19,11 @@ public:
     Tren(string kimlik, string seferAdi) : kimlik(kimlik), seferAdi(seferAdi) {
         for (int i = 0; i < vagonSayisi; ++i) {
             for (int j = 0; j < koltukSayisi; ++j) {
-                koltukBilgileri[i][j][0] = ""; // Ad
-                koltukBilgileri[i][j][1] = ""; // Yaş
-                koltukBilgileri[i][j][2] = ""; // Cinsiyet
+                koltukBilgileri[i][j][0] = "";
+                koltukBilgileri[i][j][1] = "";
+                koltukBilgileri[i][j][2] = "";
             }
         }
-        rastgeleDoluluk(); // Rastgele doluluk ataması yapılıyor.
     }
 
     Tren() : kimlik("Bos Tren"), seferAdi("Bilinmiyor") {
@@ -62,13 +61,6 @@ public:
         if (koltukNumarasi < 1 || koltukNumarasi > vagonSayisi * koltukSayisi || koltukBilgileri[vagonIndeksi][koltukIndeksi][0] != "") {
             return false;
         }
-
-        // Yaş kontrolü ekleniyor
-        if (yas <= 0 || yas > 100) {
-            cout << "Gecersiz yas! Lutfen 1 ile 100 arasinda bir yas girin." << endl;
-            return false;
-        }
-
         koltukBilgileri[vagonIndeksi][koltukIndeksi][0] = ad;
         koltukBilgileri[vagonIndeksi][koltukIndeksi][1] = to_string(yas);
         koltukBilgileri[vagonIndeksi][koltukIndeksi][2] = cinsiyet;
@@ -89,23 +81,6 @@ public:
             return koltukBilgileri[vagonIndeksi][koltukIndeksi][0] + " - " +
                 koltukBilgileri[vagonIndeksi][koltukIndeksi][1] + " - " +
                 koltukBilgileri[vagonIndeksi][koltukIndeksi][2];
-        }
-    }
-
-    void rastgeleDoluluk() {
-        srand(time(nullptr)); // Rastgelelik için zamanı kullan
-
-        for (int i = 0; i < vagonSayisi; ++i) {
-            for (int j = 0; j < koltukSayisi; ++j) {
-                if (rand() % 2 == 0) { // Her koltuk için %50 olasılıkla dolu veya boş atanıyor.
-                    string isim = "Yolcu" + to_string(i * koltukSayisi + j + 1);
-                    int yas = rand() % 60 + 20; // 20-79 arası yaş atanıyor.
-                    string cinsiyet = (isim[isim.size() - 1] == 'a') ? "Kadin" : "Erkek"; // İsim son harfine göre cinsiyet atanıyor.
-                    koltukBilgileri[i][j][0] = isim;
-                    koltukBilgileri[i][j][1] = to_string(yas);
-                    koltukBilgileri[i][j][2] = cinsiyet;
-                }
-            }
         }
     }
 
@@ -137,11 +112,13 @@ void ekranTemizle() {
 
 int main() {
     Tren aktifTrenler[3];
-    string seferAdlari[5] = {"Ankara - Istanbul", "Istanbul - Ankara", "Izmir - Ankara", "Ankara - Izmir", "Istanbul - Izmir"};
+    string seferAdlari[] = { "Ankara-Kocaeli", "Ankara-Eskisehir", "Ankara-Sivas", "Ankara-Istanbul", "Ankara-Antalya" };
+    srand(time(nullptr));
 
+    string seciliSeferler[3];
     for (int i = 0; i < 3; ++i) {
-        string seferAdi = "[" + to_string(i + 1) + "] " + seferAdlari[rand() % 5];
-        aktifTrenler[i] = Tren("Tren " + to_string(i + 1), seferAdi);
+        seciliSeferler[i] = "[" + to_string(i + 1) + "] " + seferAdlari[rand() % 5];
+        aktifTrenler[i] = Tren("Tren " + to_string(i + 1), seciliSeferler[i]);
     }
 
     cout << "RailYou'ya Hosgeldiniz!" << endl;
@@ -158,7 +135,7 @@ int main() {
             ekranTemizle();
             cout << "Aktif trenler:" << endl;
             for (int i = 0; i < 3; ++i) {
-                cout << aktifTrenler[i].seferAdiAl() << ": " << endl;
+                cout << seciliSeferler[i] << ": " << endl;
                 aktifTrenler[i].bosKoltuklariGoster();
                 cout << endl;
             }
@@ -176,7 +153,6 @@ int main() {
             cin >> koltukNumarasi;
 
             string ad;
-            string yasString;
             int yas;
             string cinsiyet;
             bool dogruYas = false;
@@ -185,23 +161,16 @@ int main() {
             cin >> ad;
 
             while (!dogruYas) {
-                cout << "Yasinizi girin: ";
-                cin >> yasString;
+                cout << "Yasinizi girin (1-100): ";
+                cin >> yas;
 
-                for (char c : yasString) {
-                    if (!isdigit(c)) {
-                        cout << "Yas sadece rakam iceriyor olmalidir. Lutfen tekrar deneyin." << endl;
-                        break;
-                    }
+                if (cin.fail() || yas < 1 || yas > 100) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "Yas 1 ile 100 arasinda olmalidir. Lutfen tekrar deneyin." << endl;
                 }
-
-                if (all_of(yasString.begin(), yasString.end(), ::isdigit)) {
-                    yas = stoi(yasString);
-                    if (yas <= 0 || yas > 100) {
-                        cout << "Gecersiz yas! Lutfen 1 ile 100 arasinda bir yas girin." << endl;
-                    } else {
-                        dogruYas = true;
-                    }
+                else {
+                    dogruYas = true;
                 }
             }
 

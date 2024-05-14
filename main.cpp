@@ -186,8 +186,8 @@ int main() { // Ana fonksiyon
 
                 // Yaş girişinin doğru olup olmadığını kontrol et
                 if (cin.fail() || yas < 1 || yas > 100) { // 1-100 aralığında mı diye kontrol ediyoruz
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cin.clear(); // cin.(fail)'ı yeniden sıfırlar
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Tamponu temizler, '\n' ' e kadar
                     cout << "Yas 1 ile 100 arasinda olmalidir. Lutfen tekrar deneyin." << endl;
                 }
                 else {

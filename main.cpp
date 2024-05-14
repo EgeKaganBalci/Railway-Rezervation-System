@@ -112,6 +112,16 @@ void menuGoster() { // Ana menüyü gösteren fonksiyon
     cout << "Seciminizi girin: "; // Kullanıcıdan seçim yapmasını istiyorum.
 }
 
+void ekranTemizle()  { // Ekranı temizleme fonksiyonu
+#ifdef _WIN32 // Windows işletim sistemi için temizleme kodu
+        system("cls");
+#else // Diğer işletim sistemleri için temizleme kodu
+        system("clear");
+#endif
+    }
+};
+
+
 int main() { // Ana fonksiyon
     Tren aktifTrenler[3]; // En fazla 3 tren oluşturuyoruz
     
